@@ -1,0 +1,393 @@
+openapi: 3.0.3
+info:
+  title: Chords API
+  description: |
+    JSON HTTP API for the Chords music-theory and guitar tools app.
+    Covers transposition, scale generation, diatonic chords, chord diagrams,
+    and progression suggestions. Routes under `/api` return JSON; HTML page
+    routes (`/`, `/scales`, `/diatonic`, `/chords`, `/metronome`) are omitted.
+  version: "1.0.0"
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /api/transpose:
+    post:
+      summary: Transpose a chord sheet
+      description: |
+        Shifts every chord in a free-form chord sheet, either by a fixed number
+        of semitones (with source key auto-detected) or between two explicit keys.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransposeRequest'
+            examples:
+              semitone:
+                value:
+                  sheet: "C G Am F"
+                  mode: "semitone"
+                  semitones: 2
+              key:
+                value:
+                  sheet: "C G Am F"
+                  mode: "key"
+                  from_key: "C"
+                  to_key: "D"
+      responses:
+        '200':
+          description: Transposed chord sheet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransposeResponse'
+        '400':
+          description: Invalid input (bad JSON, missing sheet, unknown mode or key)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransposeResponse'
+
+  /api/scales:
+    get:
+      summary: Generate all scale types for a root note
+      description: |
+        Returns the six built-in scale types (Major, Minor, Major/Minor
+        Pentatonic, Major/Minor Blues) for the given root. Enharmonic spelling
+        follows the implied key of the root.
+      parameters:
+        - $ref: '#/components/parameters/RootQuery'
+      responses:
+        '200':
+          description: List of scales
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [scales]
+                properties:
+                  scales:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScaleCard'
+        '400':
+          description: Invalid root
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/diatonic:
+    get:
+      summary: Get diatonic chords for a key
+      description: |
+        Returns the seven diatonic chords for a major or (natural) minor key,
+        along with a guitar voicing when one is available in the built-in library.
+      parameters:
+        - $ref: '#/components/parameters/RootQuery'
+        - name: minor
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["true", "false"]
+            default: "false"
+          description: When `true`, use a natural-minor diatonic set; otherwise major.
+      responses:
+        '200':
+          description: Diatonic chord set
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [key, chords]
+                properties:
+                  key:
+                    type: string
+                    example: "C Major"
+                  chords:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DiatonicChordWithVoicing'
+        '400':
+          description: Invalid root
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/chord-diagram:
+    get:
+      summary: Look up guitar chord diagrams
+      description: |
+        Returns guitar voicings for a chord name. Falls back to an algorithmic
+        fretboard search when no static voicing exists.
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Chord symbol (e.g. `C`, `Am7`, `F#dim`, `Bbmaj7`).
+          example: "Am7"
+        - name: max_fret
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 12
+          description: Highest fret to consider when searching voicings.
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 3
+          description: Maximum number of voicings to return.
+      responses:
+        '200':
+          description: Voicings and chord tones
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [voicings, notes]
+                properties:
+                  voicings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChordVoicing'
+                  notes:
+                    type: array
+                    description: Pitch-class note names making up the chord.
+                    items:
+                      type: string
+                    example: ["A", "C", "E", "G"]
+        '400':
+          description: Missing `name` parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No voicings found for the given chord name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/progressions:
+    get:
+      summary: Generate chord-progression suggestions
+      description: |
+        Produces a list of suggested chord progressions for the given key.
+        Each suggestion comes from the built-in progression pattern database
+        and can be optionally filtered by mood or style. When the chord exists
+        in the voicing library, a `voicing` field is attached.
+      parameters:
+        - $ref: '#/components/parameters/RootQuery'
+        - name: minor
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ["true", "false"]
+            default: "false"
+          description: When `true`, use a minor-key pattern realization.
+        - name: mood
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [happy, sad, energetic, dark, chill]
+          description: Filter suggestions by mood tag.
+        - name: style
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pop, rock, jazz, blues, folk]
+          description: Filter suggestions by style tag.
+        - name: length
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+          description: |
+            Optional target number of chords. When unset, each pattern is
+            returned at its natural length.
+      responses:
+        '200':
+          description: Generated progressions
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [key, progressions]
+                properties:
+                  key:
+                    type: string
+                    example: "C Major"
+                  progressions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProgressionWithVoicing'
+        '400':
+          description: Invalid root or bad pattern-generation parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  parameters:
+    RootQuery:
+      name: root
+      in: query
+      required: false
+      schema:
+        type: string
+        default: "C"
+      description: |
+        Root note spelled with a letter and optional accidental
+        (e.g. `C`, `C#`, `Db`, `F#`, `Bb`).
+      example: "C"
+
+  schemas:
+    TransposeRequest:
+      type: object
+      required: [sheet, mode]
+      properties:
+        sheet:
+          type: string
+          description: Chord sheet text. Chords may be embedded in lyrics.
+          example: "C G Am F"
+        mode:
+          type: string
+          enum: [semitone, key]
+          description: Transposition mode.
+        semitones:
+          type: integer
+          description: Shift amount when `mode=semitone`. Zero returns the sheet unchanged.
+          example: 2
+        from_key:
+          type: string
+          description: Source key (required when `mode=key`).
+          example: "C"
+        to_key:
+          type: string
+          description: Target key (required when `mode=key`).
+          example: "D"
+
+    TransposeResponse:
+      type: object
+      required: [result]
+      properties:
+        result:
+          type: string
+          description: Transposed chord sheet (empty on error).
+        error:
+          type: string
+          description: Error message; present only on failure.
+
+    ScaleCard:
+      type: object
+      required: [name, notes, display]
+      properties:
+        name:
+          type: string
+          example: "G Major"
+        notes:
+          type: array
+          items:
+            type: string
+          example: ["G", "A", "B", "C", "D", "E", "F#"]
+        display:
+          type: string
+          example: "G - A - B - C - D - E - F#"
+
+    DiatonicChord:
+      type: object
+      required: [degree, name, quality]
+      properties:
+        degree:
+          type: string
+          description: Roman numeral (`I`, `ii`, `vii°`, ...).
+          example: "I"
+        name:
+          type: string
+          description: Chord symbol.
+          example: "C"
+        quality:
+          type: string
+          enum: [Major, minor, dim]
+
+    DiatonicChordWithVoicing:
+      allOf:
+        - $ref: '#/components/schemas/DiatonicChord'
+        - type: object
+          properties:
+            voicing:
+              $ref: '#/components/schemas/ChordVoicing'
+
+    ChordVoicing:
+      type: object
+      required: [name, frets, fingers, base_fret]
+      properties:
+        name:
+          type: string
+          example: "Am"
+        frets:
+          type: array
+          minItems: 6
+          maxItems: 6
+          description: |
+            Six-element array from low-E to high-E string.
+            `-1` = muted, `0` = open, positive integers = fret number.
+          items:
+            type: integer
+          example: [-1, 0, 2, 2, 1, 0]
+        fingers:
+          type: array
+          minItems: 6
+          maxItems: 6
+          description: |
+            Six-element array from low-E to high-E string.
+            `0` = not pressed, `1`–`4` = finger number.
+          items:
+            type: integer
+          example: [0, 0, 2, 3, 1, 0]
+        base_fret:
+          type: integer
+          description: Lowest fret the diagram window starts at (1-indexed).
+          example: 1
+
+    ProgressionWithVoicing:
+      type: object
+      required: [pattern_name, mood, style, chords]
+      properties:
+        pattern_name:
+          type: string
+          example: "Pop Classic"
+        mood:
+          type: string
+          example: "happy"
+        style:
+          type: string
+          example: "pop"
+        chords:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiatonicChordWithVoicing'
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string

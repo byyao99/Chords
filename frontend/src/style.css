@@ -1,0 +1,927 @@
+/* ── Theme Variables ── */
+:root {
+    --bg-primary: #f8f9fa;
+    --bg-card: #fff;
+    --bg-input: #fff;
+    --bg-mode: #f1f2f6;
+    --text-primary: #2d3436;
+    --text-secondary: #636e72;
+    --text-muted: #b2bec3;
+    --border: #dfe6e9;
+    --accent: #6c5ce7;
+    --accent-bg: rgba(108, 92, 231, 0.15);
+    --error: #d63031;
+    --error-bg: #ffeef0;
+    --error-border: #fab1a0;
+    --shadow: rgba(0, 0, 0, 0.06);
+    --shadow-hover: rgba(0, 0, 0, 0.1);
+    --note-highlight: #3867d6;
+    --header-bg: linear-gradient(135deg, #0a0a0a 0%, #09090a 100%);
+    --btn-bg: linear-gradient(135deg, #090909 0%, #000000 100%);
+    --note-purple-bg: #f3f0ff; --note-purple-fg: #6c5ce7; --note-purple-border: #d5ccff;
+    --note-green-bg: #e8fcf5;  --note-green-fg: #00a381;  --note-green-border: #b8f0de;
+    --note-yellow-bg: #fef9e7; --note-yellow-fg: #c58f07;  --note-yellow-border: #f7e5a0;
+    --note-orange-bg: #fef0ec; --note-orange-fg: #d35230;  --note-orange-border: #f5c4b8;
+    --note-blue-bg: #ebf5fb;   --note-blue-fg: #0874c9;   --note-blue-border: #b8daf5;
+    --note-pink-bg: #fdeef5;   --note-pink-fg: #c9357a;   --note-pink-border: #f5b8d6;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #121212;
+    --bg-card: #1e1e1e;
+    --bg-input: #2a2a2a;
+    --bg-mode: #2a2a2a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-muted: #666;
+    --border: #333;
+    --accent: #7c6ff7;
+    --accent-bg: rgba(124, 111, 247, 0.2);
+    --error: #ff6b6b;
+    --error-bg: #2d1515;
+    --error-border: #5c2020;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --shadow-hover: rgba(0, 0, 0, 0.5);
+    --note-highlight: #74b9ff;
+    --header-bg: linear-gradient(135deg, #0a0a0a 0%, #09090a 100%);
+    --btn-bg: linear-gradient(135deg, #2a2a4a 0%, #1a1a3a 100%);
+    --note-purple-bg: #1e1a2e; --note-purple-fg: #a89cf7; --note-purple-border: #3d3560;
+    --note-green-bg: #0f2a20;  --note-green-fg: #4dd9a6;  --note-green-border: #1a4a35;
+    --note-yellow-bg: #2a2510; --note-yellow-fg: #f0d060;  --note-yellow-border: #504820;
+    --note-orange-bg: #2a1a15; --note-orange-fg: #f09070;  --note-orange-border: #503020;
+    --note-blue-bg: #101a2a;   --note-blue-fg: #60a0f0;   --note-blue-border: #1a3050;
+    --note-pink-bg: #2a1520;   --note-pink-fg: #f080b0;   --note-pink-border: #502040;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ── Focus Styles ── */
+*:focus {
+    outline: none;
+}
+*:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+.playable-chord:focus-visible,
+.note-pill:focus-visible,
+.beat-dot:focus-visible {
+    outline-offset: 3px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* ── Header ── */
+.site-header {
+    background: var(--header-bg);
+    padding: 1.8rem 1rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.site-title {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.85;
+}
+
+/* ── Theme Toggle ── */
+.theme-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+    transition: background 0.2s;
+    color: #fff;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Pill Tab Nav ── */
+.tab-nav {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    padding: 4px;
+    gap: 4px;
+}
+
+.tab-nav a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    transition: all 0.25s ease;
+}
+
+.tab-nav a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.tab-nav a.active {
+    color: var(--accent);
+    background: var(--bg-card);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Container ── */
+.container {
+    max-width: 820px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+/* ── Form Elements ── */
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: var(--text-secondary);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+textarea {
+    width: 100%;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 14px;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    resize: vertical;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    tab-size: 8;
+    white-space: pre;
+    overflow-x: auto;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.input-section {
+    margin-bottom: 1.5rem;
+}
+
+.controls {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 12px var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+/* ── Mode Toggle ── */
+.mode-select {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.2rem;
+    background: var(--bg-mode);
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.mode-select label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0;
+    cursor: pointer;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+    color: var(--text-secondary);
+}
+
+.mode-select label:has(input:checked) {
+    background: var(--bg-card);
+    color: var(--accent);
+    font-weight: 600;
+    box-shadow: 0 1px 4px var(--shadow);
+}
+
+.mode-select input[type="radio"] {
+    display: none;
+}
+
+.mode-panel {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.mode-panel label {
+    margin-bottom: 0;
+    font-size: 13px;
+}
+
+.mode-panel.hidden {
+    display: none;
+}
+
+select {
+    font-size: 14px;
+    padding: 0.5rem 0.8rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--btn-bg);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    letter-spacing: 0.5px;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.35);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Output ── */
+.output-section {
+    margin-top: 0.5rem;
+}
+
+.output-section label {
+    margin-bottom: 0.5rem;
+}
+
+#output {
+    width: 100%;
+    min-height: 120px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 14px;
+    padding: 1rem;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 8;
+    color: var(--text-primary);
+}
+
+/* ── Error ── */
+.error {
+    color: var(--error);
+    background: var(--error-bg);
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--error-border);
+    margin-top: 1rem;
+    font-size: 14px;
+}
+
+.error.hidden {
+    display: none;
+}
+
+/* ── Scales Page ── */
+.scales-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--bg-card);
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.scales-controls label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.scales-controls select {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    min-width: 120px;
+}
+
+.type-filter-wrap {
+    position: relative;
+}
+
+.type-filter-btn {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0.5rem 2.2rem 0.5rem 1rem;
+    min-width: 120px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    cursor: pointer;
+    text-align: left;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 12px;
+}
+
+.type-filter-btn:hover {
+    border-color: var(--accent);
+}
+
+.type-filter-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 16px var(--shadow);
+    z-index: 100;
+    min-width: 220px;
+    max-height: 320px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.type-filter-dropdown.hidden {
+    display: none;
+}
+
+.type-filter-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    white-space: nowrap;
+    margin-bottom: 0;
+}
+
+.type-filter-option:hover {
+    background: var(--bg-hover, rgba(0,0,0,0.05));
+}
+
+.type-filter-option input[type="checkbox"] {
+    margin: 0;
+}
+
+.type-filter-all {
+    font-weight: 600;
+}
+
+.type-filter-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2px 0;
+}
+
+.empty-hint {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 3rem 1rem;
+    font-size: 15px;
+}
+
+.scales-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1rem;
+}
+
+.scale-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.3rem 1.5rem;
+    box-shadow: 0 2px 12px var(--shadow);
+    border-left: 4px solid var(--accent);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.scale-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow-hover);
+}
+
+.scale-card:nth-child(6n+1) { border-left-color: #6c5ce7; }
+.scale-card:nth-child(6n+2) { border-left-color: #00b894; }
+.scale-card:nth-child(6n+3) { border-left-color: #fdcb6e; }
+.scale-card:nth-child(6n+4) { border-left-color: #e17055; }
+.scale-card:nth-child(6n+5) { border-left-color: #0984e3; }
+.scale-card:nth-child(6n+6) { border-left-color: #e84393; }
+
+.scale-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.scale-notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.note-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    padding: 0.3rem 0.7rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: transform 0.15s;
+}
+
+.note-pill.playable {
+    cursor: pointer;
+}
+
+.note-pill.playable:hover {
+    transform: scale(1.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.note-pill.playable:active {
+    transform: scale(0.96);
+}
+
+.note-pill:hover {
+    transform: scale(1.1);
+}
+
+/* Note pill colors per card (6-color cycle) */
+.scale-card:nth-child(6n+1) .note-pill { background: var(--note-purple-bg); color: var(--note-purple-fg); border: 1px solid var(--note-purple-border); }
+.scale-card:nth-child(6n+2) .note-pill { background: var(--note-green-bg); color: var(--note-green-fg); border: 1px solid var(--note-green-border); }
+.scale-card:nth-child(6n+3) .note-pill { background: var(--note-yellow-bg); color: var(--note-yellow-fg); border: 1px solid var(--note-yellow-border); }
+.scale-card:nth-child(6n+4) .note-pill { background: var(--note-orange-bg); color: var(--note-orange-fg); border: 1px solid var(--note-orange-border); }
+.scale-card:nth-child(6n+5) .note-pill { background: var(--note-blue-bg); color: var(--note-blue-fg); border: 1px solid var(--note-blue-border); }
+.scale-card:nth-child(6n+6) .note-pill { background: var(--note-pink-bg); color: var(--note-pink-fg); border: 1px solid var(--note-pink-border); }
+
+.note-pill.root {
+    font-weight: 800;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+/* ── Diatonic Page ── */
+.key-label {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.2rem;
+}
+
+.mode-toggle {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-mode);
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.toggle-btn {
+    width: auto;
+    padding: 0.4rem 1.2rem;
+    font-size: 13px;
+    font-weight: 600;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    letter-spacing: 0;
+}
+
+.toggle-btn:hover {
+    transform: none;
+    box-shadow: none;
+    color: var(--text-primary);
+}
+
+.toggle-btn.active {
+    background: var(--bg-card);
+    color: var(--accent);
+    box-shadow: 0 1px 4px var(--shadow);
+}
+
+.diatonic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    gap: 0.8rem;
+}
+
+.diatonic-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1rem 0.6rem;
+    box-shadow: 0 2px 12px var(--shadow);
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.diatonic-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow-hover);
+}
+
+.diatonic-degree {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.2rem;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+}
+
+.diatonic-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+}
+
+.diatonic-diagram {
+    display: flex;
+    justify-content: center;
+    margin: 0.4rem 0;
+}
+
+.diatonic-quality {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── Chord Lookup Page ── */
+.scales-controls input[type="text"] {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    min-width: 160px;
+    transition: border-color 0.2s;
+}
+
+.scales-controls input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.scales-controls button {
+    width: auto;
+    padding: 0.5rem 1.5rem;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.chord-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 1rem;
+}
+
+.chord-notes-header {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.playable-chord {
+    cursor: pointer;
+}
+
+.playable-chord:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.playable-chord:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.chord-cards-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.25rem;
+}
+
+.chord-display-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: 0 4px 20px var(--shadow);
+    text-align: center;
+}
+
+.chord-display-name {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.chord-display-diagram {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.chord-frets-label {
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+    font-size: 14px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+}
+
+.chord-notes-label {
+    font-size: 15px;
+    color: var(--note-highlight);
+    letter-spacing: 3px;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+.chord-svg {
+    display: block;
+    color: var(--text-primary);
+}
+
+/* ── Metronome Page ── */
+.metronome-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.metronome-controls {
+    background: var(--bg-card);
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.metronome-controls label {
+    margin-bottom: 0;
+}
+
+.metronome-controls select {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+}
+
+.bpm-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bpm-display {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.bpm-slider {
+    width: 260px;
+    accent-color: var(--accent);
+}
+
+.beat-display {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+}
+
+.beat-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.08s, transform 0.08s;
+    cursor: pointer;
+    border: 2px solid transparent;
+    /* button element reset */
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.beat-dot:hover {
+    opacity: 0.8;
+}
+
+/* User-marked accent (ring indicator) */
+.beat-dot.accent-mark {
+    border-color: #e17055;
+}
+
+/* Playing state: normal beat */
+.beat-dot.active {
+    background: var(--accent);
+    transform: scale(1.3);
+}
+
+/* Playing state: accent beat */
+.beat-dot.playing-accent {
+    background: #e17055;
+    transform: scale(1.3);
+}
+
+.metronome-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.metronome-buttons button {
+    width: auto;
+    padding: 0.8rem 2.5rem;
+    font-size: 16px;
+}
+
+.start-btn {
+    background: var(--accent) !important;
+    min-width: 140px;
+}
+
+.start-btn:hover {
+    box-shadow: 0 4px 15px var(--accent-bg);
+}
+
+.start-btn.running {
+    background: #d63031 !important;
+}
+
+.tap-btn {
+    background: transparent !important;
+    color: var(--text-secondary) !important;
+    border: 2px solid var(--border) !important;
+}
+
+.tap-btn:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    box-shadow: none;
+}
+
+/* ── Loading / Disabled state ── */
+.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.loading-indicator {
+    color: var(--text-muted);
+    font-size: 14px;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* ── Note pill as button element: reset browser defaults without overriding pill colors ── */
+button.note-pill {
+    font: inherit;
+    cursor: pointer;
+}
+
+/* ── Responsive ── */
+@media (max-width: 500px) {
+    .scales-grid {
+        grid-template-columns: 1fr;
+    }
+    .diatonic-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    }
+    .tab-nav a {
+        padding: 0.4rem 0.8rem;
+        font-size: 12px;
+    }
+    .bpm-display {
+        font-size: 3rem;
+    }
+    .bpm-slider {
+        width: 200px;
+    }
+}
+
+@media (max-width: 600px) {
+    .chord-display-diagram .chord-svg {
+        width: 160px !important;
+        height: 180px !important;
+    }
+    .note-pill {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0.6rem 0.9rem;
+    }
+    .beat-dot {
+        width: 36px;
+        height: 36px;
+    }
+}
