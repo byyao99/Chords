@@ -13,7 +13,6 @@ const ariaPressed = computed(() => (theme.value === 'dark' ? 'true' : 'false'))
     <nav class="tab-nav">
       <RouterLink to="/" exact-active-class="active">Transpose</RouterLink>
       <RouterLink to="/chords" exact-active-class="active">Chords</RouterLink>
-      <RouterLink to="/diatonic" exact-active-class="active">Diatonic</RouterLink>
       <RouterLink to="/scales" exact-active-class="active">Scales</RouterLink>
       <RouterLink to="/metronome" exact-active-class="active">Metronome</RouterLink>
     </nav>

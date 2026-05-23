@@ -553,94 +553,6 @@ button:disabled {
 }
 
 
-/* ── Diatonic Page ── */
-.key-label {
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 1.2rem;
-}
-
-.mode-toggle {
-    display: flex;
-    gap: 4px;
-    background: var(--bg-mode);
-    border-radius: 8px;
-    padding: 3px;
-}
-
-.toggle-btn {
-    width: auto;
-    padding: 0.4rem 1.2rem;
-    font-size: 13px;
-    font-weight: 600;
-    background: transparent;
-    color: var(--text-secondary);
-    border-radius: 6px;
-    letter-spacing: 0;
-}
-
-.toggle-btn:hover {
-    transform: none;
-    box-shadow: none;
-    color: var(--text-primary);
-}
-
-.toggle-btn.active {
-    background: var(--bg-card);
-    color: var(--accent);
-    box-shadow: 0 1px 4px var(--shadow);
-}
-
-.diatonic-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-    gap: 0.8rem;
-}
-
-.diatonic-card {
-    background: var(--bg-card);
-    border-radius: 12px;
-    padding: 1rem 0.6rem;
-    box-shadow: 0 2px 12px var(--shadow);
-    text-align: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.diatonic-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--shadow-hover);
-}
-
-.diatonic-degree {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    margin-bottom: 0.2rem;
-    font-family: "SF Mono", "Fira Code", "Consolas", monospace;
-}
-
-.diatonic-name {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 0.3rem;
-}
-
-.diatonic-diagram {
-    display: flex;
-    justify-content: center;
-    margin: 0.4rem 0;
-}
-
-.diatonic-quality {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
 /* ── Chord Lookup Page ── */
 .scales-controls input[type="text"] {
     font-size: 16px;
@@ -894,9 +806,6 @@ button.note-pill {
 @media (max-width: 500px) {
     .scales-grid {
         grid-template-columns: 1fr;
-    }
-    .diatonic-grid {
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     }
     .tab-nav a {
         padding: 0.4rem 0.8rem;

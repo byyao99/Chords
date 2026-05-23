@@ -3,7 +3,7 @@ export interface RootOption {
   label: string
 }
 
-// Used by Diatonic + Scales pages (mirrors handler.rootOptions).
+// Used by the Scales page.
 export const ROOT_OPTIONS: RootOption[] = [
   { value: 'C', label: 'C' },
   { value: 'C#', label: 'C# / Db' },

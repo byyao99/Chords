@@ -34,35 +34,8 @@ export interface ChordVoicing {
   base_fret: number
 }
 
-// matches music.DiatonicChord with optional voicing attached by handler
-export interface DiatonicChord {
-  degree: string
-  name: string
-  quality: string
-  voicing?: ChordVoicing
-}
-
-export interface DiatonicResponse {
-  key: string
-  chords: DiatonicChord[]
-  error?: string
-}
-
 export interface ChordDiagramResponse {
   voicings: ChordVoicing[]
   notes: string[]
-  error?: string
-}
-
-export interface Progression {
-  pattern_name: string
-  mood: string
-  style: string
-  chords: DiatonicChord[]
-}
-
-export interface ProgressionsResponse {
-  key: string
-  progressions: Progression[]
   error?: string
 }

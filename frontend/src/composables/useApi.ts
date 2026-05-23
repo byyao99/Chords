@@ -1,7 +1,5 @@
 import type {
   ChordDiagramResponse,
-  DiatonicResponse,
-  ProgressionsResponse,
   ScalesResponse,
   TransposeRequest,
   TransposeResponse,
@@ -33,29 +31,8 @@ export function getScales(root: string, types: string[]): Promise<ScalesResponse
   return getJson<ScalesResponse>(url)
 }
 
-export function getDiatonic(root: string, minor: boolean): Promise<DiatonicResponse> {
-  return getJson<DiatonicResponse>(
-    `/api/diatonic?root=${encodeURIComponent(root)}&minor=${minor}`,
-  )
-}
-
 export function getChordDiagram(name: string, maxFret: number): Promise<ChordDiagramResponse> {
   return getJson<ChordDiagramResponse>(
     `/api/chord-diagram?name=${encodeURIComponent(name)}&max_fret=${maxFret}`,
   )
-}
-
-export function getProgressions(
-  root: string,
-  minor: boolean,
-  mood: string,
-  style: string,
-): Promise<ProgressionsResponse> {
-  const params = new URLSearchParams({
-    root,
-    minor: String(minor),
-    mood,
-    style,
-  })
-  return getJson<ProgressionsResponse>(`/api/progressions?${params.toString()}`)
 }

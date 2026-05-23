@@ -48,7 +48,7 @@ func TestSPAFallback_Root(t *testing.T) {
 
 func TestSPAFallback_PageRoutes(t *testing.T) {
 	r := testRouter(t)
-	for _, path := range []string{"/chords", "/diatonic", "/scales", "/metronome"} {
+	for _, path := range []string{"/chords", "/scales", "/metronome"} {
 		req := httptest.NewRequest("GET", path, nil)
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
@@ -287,59 +287,6 @@ func TestScalesAPI_TypeFilter(t *testing.T) {
 	})
 }
 
-// ── Diatonic Tests ──
-
-func TestDiatonicAPI_CMajor(t *testing.T) {
-	r := testRouter(t)
-	req := httptest.NewRequest("GET", "/api/diatonic?root=C&minor=false", nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	if w.Code != 200 {
-		t.Fatalf("status = %d, want 200", w.Code)
-	}
-
-	var resp struct {
-		Key    string          `json:"key"`
-		Chords json.RawMessage `json:"chords"`
-	}
-	json.NewDecoder(w.Body).Decode(&resp)
-
-	if resp.Key != "C Major" {
-		t.Errorf("key = %q, want %q", resp.Key, "C Major")
-	}
-	if !strings.Contains(string(resp.Chords), "Dm") {
-		t.Error("C major diatonic should contain Dm")
-	}
-}
-
-func TestDiatonicAPI_AMinor(t *testing.T) {
-	r := testRouter(t)
-	req := httptest.NewRequest("GET", "/api/diatonic?root=A&minor=true", nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	var resp struct {
-		Key string `json:"key"`
-	}
-	json.NewDecoder(w.Body).Decode(&resp)
-
-	if resp.Key != "A Minor" {
-		t.Errorf("key = %q, want %q", resp.Key, "A Minor")
-	}
-}
-
-func TestDiatonicAPI_InvalidRoot(t *testing.T) {
-	r := testRouter(t)
-	req := httptest.NewRequest("GET", "/api/diatonic?root=X", nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	if w.Code != http.StatusBadRequest {
-		t.Errorf("status = %d, want 400", w.Code)
-	}
-}
-
 // ── Chord Diagram Tests ──
 
 func TestChordDiagramAPI_Am(t *testing.T) {
@@ -394,39 +341,3 @@ func TestChordDiagramAPI_MissingName(t *testing.T) {
 	}
 }
 
-// ── Progressions Tests ──
-
-func TestProgressionsAPI_CMajorPop(t *testing.T) {
-	r := testRouter(t)
-	req := httptest.NewRequest("GET", "/api/progressions?root=C&style=pop", nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	if w.Code != 200 {
-		t.Fatalf("GET /api/progressions status = %d, want 200", w.Code)
-	}
-
-	var resp struct {
-		Key          string            `json:"key"`
-		Progressions []json.RawMessage `json:"progressions"`
-	}
-	json.NewDecoder(w.Body).Decode(&resp)
-
-	if resp.Key != "C Major" {
-		t.Errorf("key = %q, want C Major", resp.Key)
-	}
-	if len(resp.Progressions) == 0 {
-		t.Error("expected at least one progression")
-	}
-}
-
-func TestProgressionsAPI_InvalidRoot(t *testing.T) {
-	r := testRouter(t)
-	req := httptest.NewRequest("GET", "/api/progressions?root=X", nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-
-	if w.Code != http.StatusBadRequest {
-		t.Errorf("status = %d, want 400", w.Code)
-	}
-}
